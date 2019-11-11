@@ -4,7 +4,8 @@ class websocketClass
 {
 	
 	constructor(){
-		websocket = new WebSocket('ws://support.local:8080');
+//		websocket = new WebSocket('ws://support.local:8080');
+                websocket = new WebSocket('wss://qa.kloc.co.uk/supportSocket');
 		
 		websocket.onopen = function(e){
 			console.log("Connected to websocket");
