@@ -182,27 +182,26 @@ class appClass
 							.text("Save")
 							.attr("data-support-task-id", supportTaskID)
 							.click(function(e){
-								if( parseInt( supportTaskID ) != 0 ){
-									//Update a record
-									_api.call(
-										"updateSupportTicket",
-										{
-											customer_id: $("#addEditSupportTaskCustomer option:selected").val(),
-											task_description: $("#addEditSupportTaskDescription").val(),
-											priority_id: $("#addEditSupportTaskPriority").val(),
-											due_date: $("#addEditSupportTaskDueDate").val(),
-											time_estimate_hours: $("#addEditSupportTaskEstimatedHours").val(),
-											support_ticket_id: $(this).attr("data-support-task-id")
-										},
-										function(data){
-											$("#addTaskFormContainer").hide();
-											$("#supportTasksTable").show();
-											app.getAllSupportTickets();
-										}
-									);
-								} else {
-									//Create a new record
-								}
+								var method = "createSupportTicket";
+								
+								if( parseInt( supportTaskID ) != 0 )method = "updateSupportTicket";
+								
+								_api.call(
+									method,
+									{
+										customer_id: $("#addEditSupportTaskCustomer option:selected").val(),
+										task_description: $("#addEditSupportTaskDescription").val(),
+										priority_id: $("#addEditSupportTaskPriority").val(),
+										due_date: $("#addEditSupportTaskDueDate").val(),
+										time_estimate_hours: $("#addEditSupportTaskEstimatedHours").val(),
+										support_ticket_id: $(this).attr("data-support-task-id")
+									},
+									function(data){
+										$("#addTaskFormContainer").hide();
+										$("#supportTasksTable").show();
+										app.getAllSupportTickets();
+									}
+								);
 							})
 					)
 			)
