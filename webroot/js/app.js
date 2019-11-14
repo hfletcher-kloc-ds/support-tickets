@@ -29,6 +29,9 @@ class appClass
 			var notification_body = JSON.parse( JSON.parse( e.data ).notification_body );
 			
 			if( notification_body.method == "createSupportTicket" ){
+				//If already displayed, do nothing
+				if( $("[data-ticket-id='"+ notification_body.support_ticket_id +"']").length >= 1 )return;
+				
 				//Get the details of the support ticket
 				_api.call(
 					"getSupportTicketByID",
