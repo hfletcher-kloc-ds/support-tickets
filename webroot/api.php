@@ -118,6 +118,9 @@
 			//Check the customer exists
 			if(!in_array( $_POST['customer_id'], array_column( $this->listCustomers()[1], 'id' ) ))return array(400, "Customer ID doesn't exist");
 			
+			//Check if the customer has any open tickets
+			if( sizeof( $this->getAllActiveSupportTicketsForCustomer()[1] ) > 0 )return array( 400, "Cannot delete customer whilst they have active tickets" );
+			
 			//build query to deleteCustomer
 			$stmt = $this->database->prepare("DELETE FROM customers WHERE id=:customer_id");
 			
@@ -132,6 +135,24 @@
 			$this->pushNotification($_POST);
 			
 			return array( 200, "Customer deleted." );
+		}
+		
+		function getAllActiveSupportTicketsForCustomer(){
+			//which customer
+			$this->requiredFieldsCheck(array("customer_id"));
+			
+			//Build query
+			$stmt = $this->database->prepare("SELECT * FROM support_tickets WHERE customer_id=:customer_id AND archived=0 AND completed=0");
+			
+			//Run query binding parameters
+			if(
+				!$stmt->execute(array(
+						":customer_id" => $_POST['customer_id']
+					))
+			)return array( 400, "Error running query");
+			
+			//Return the results to the user
+			return array( 200, $stmt->fetchAll( PDO::FETCH_ASSOC ) );
 		}
 		
 		function validateSupportTicketDetails(){

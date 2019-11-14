@@ -18,6 +18,12 @@ class appClass
 					.attr("id", "addTaskFormContainer")
 					.hide()
 			)
+			.append(
+				$("<div></div>")
+					.addClass("supportTasksTable")
+					.attr("id", "settingsTable")
+					.hide()
+			)
 			
 		websocket.addEventListener("message", function(e){
 			var notification_body = JSON.parse( JSON.parse( e.data ).notification_body );
@@ -89,8 +95,22 @@ class appClass
 									.addClass("add-more-tasks-button")
 									.addClass("addMoreTasksButton")
 									.attr("title", "add new")
+									.addClass("smallLeftMargin")
 									.click(function(e){
 										app.addEditSupportTask();
+									})
+							)
+							.append(
+								$("<i></i>")
+									.addClass("fa")
+									.addClass("fa-2x")
+									.addClass("fa-gears")
+									.addClass("add-more-tasks-button")
+									.addClass("addMoreTasksButton")
+									.attr("title", "Settings")
+									.addClass("smallLeftMargin")
+									.click(function(e){
+										app.settings();
 									})
 							)
 							.append(
@@ -107,6 +127,170 @@ class appClass
 				
 				//Count the number of tasks and display "no tasks" messaage if necessary
 				app.checkIfDisplayNoTasksMessage();
+			}
+		);
+	}
+	
+	settings(){
+		//Hide all support task tables
+		$(".supportTasksTable").hide();
+		
+		//Show the settings table
+		$("#settingsTable").show();
+		
+		//Populate the settings table
+		$("#settingsTable")
+			.empty()
+			.append(
+				$("<div></div>")
+					.addClass("supportTasksTableRow")
+					.append(
+						$("<h2></h2>")
+							.addClass("noMargin")
+							.addClass("inlineText")
+							.text("Manage Customers | ")
+							.append(
+								$("<span></span>")
+									.addClass("inlineText")
+									.text("Cancel")
+									.click(function(e){
+										$(".supportTasksTable").hide();
+										$("#supportTasksTable").show();
+									})
+							)
+					)
+					.append(
+						$("<div></div>")
+							.addClass("fullWidth")
+							.attr("id", "customersList")
+					)
+			)
+			
+		//Get list of customers
+		_api.call(
+			"listCustomers",
+			{},
+			function(customers){
+				$.each(customers, function(i, customer){
+					$("#customersList")
+					$("#customersList")
+						.append(
+							$("<div></div>")
+								.addClass("supportTasksTableRow")
+								.addClass("supportTasksRowBorder")
+								.attr("data-customer-id", customer.id)
+								.append(
+									$("<h4></h4>")
+										.addClass("noMargin")
+										.addClass("inlineText")
+										.attr("data-customer-id", customer.id)
+										.text( customer.customer_name )
+								)
+								.append(
+									$("<input></input>")
+										.addClass("noMargin")
+										.addClass("inlineText")
+										.attr("data-customer-id", customer.id)
+										.hide()
+										.val( customer.customer_name )
+								)
+								.append(
+									$("<i></i>")
+										.addClass("fa")
+										.addClass("fa-trash")
+										.addClass("addMoreTasksButton")
+										.attr("title", "Delete Customer")
+										.addClass("smallLeftMargin")
+										.attr("data-customer-id", customer.id)
+										.click(function(e){
+											var customerId = $(this).attr("data-customer-id");
+											_api.call(
+												"deleteCustomer",
+												{customer_id: customerId},
+												function(data){
+													$("[data-customer-id='"+  +"']")
+												}
+											);
+										})
+								)
+								.append(
+									$("<i></i>")
+										.addClass("fa")
+										.addClass("fa-edit")
+										.addClass("addMoreTasksButton")
+										.attr("title", "Edit Customer")
+										.attr("data-customer-id", customer.id)
+										.click(function(e){
+											$(this).hide();
+											$(".fa-save[data-customer-id='"+ $(this).attr("data-customer-id") +"']").show();
+											$("h4[data-customer-id='"+ $(this).attr("data-customer-id") +"']").hide();
+											$("input[data-customer-id='"+ $(this).attr("data-customer-id") +"']").show();
+										})
+								)
+								.append(
+									$("<i></i>")
+										.addClass("fa")
+										.addClass("fa-save")
+										.addClass("addMoreTasksButton")
+										.attr("title", "Save Customer")
+										.attr("data-customer-id", customer.id)
+										.hide()
+										.click(function(e){
+											var self = $(this);
+											var customerID = self.attr("data-customer-id");
+											var customerName = $("input[data-customer-id='"+ customerID +"']").val();
+											
+											_api.call(
+												"updateCustomer",
+												{
+													customer_id: customerID,
+													customer_name: customerName
+												},
+												function(data){
+													self.hide();
+													$("h4[data-customer-id='"+ customerID +"']").show().text(customerName);
+													$(".fa-edit[data-customer-id='"+ customerID +"']").show();
+													$("input[data-customer-id='"+ customerID +"']").hide();
+												}
+											)
+										})
+								)
+						)
+				})
+				
+				$("#customersList")
+					.append(
+						$("<div></div>")
+							.addClass("supportTasksTableRow")
+							.addClass("supportTasksRowBorder")
+							.append(
+								$("<input></input>")
+									.addClass("noMargin")
+									.addClass("inlineText")
+									.attr("id", "new-customer-name")
+									.attr("placeholder", "new customer name")
+							)
+							.append(
+								$("<i></i>")
+									.addClass("fa")
+									.addClass("fa-save")
+									.addClass("addMoreTasksButton")
+									.attr("title", "Save Customer")
+									.click(function(e){
+										
+										_api.call(
+											"createCustomer",
+											{
+												customer_name: $("#new-customer-name").val()
+											},
+											function(data){
+												//Reload settings to refresh row
+												app.settings();
+											}
+										)
+									})
+							)
+					)
 			}
 		);
 	}
