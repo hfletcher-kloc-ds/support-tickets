@@ -4,13 +4,14 @@ class websocketClass
 {
 	
 	constructor(){
-//		websocket = new WebSocket('ws://support.local:8080');
-                websocket = new WebSocket('wss://qa.kloc.co.uk/supportSocket');
+//		websocket = new WebSocket('ws://support.local:8081');
+        websocket = new WebSocket('wss://qa.kloc.co.uk/supportSocket');
 		
 		websocket.onopen = function(e){
 			console.log("Connected to websocket");
 			
-			_websocket.socketSend({action: 1})
+			//Ping the socket every 20s to keep the connection open.
+			_websocket.socketKeepAlive();
 		}
 		
 		websocket.onmessage = function(e){
