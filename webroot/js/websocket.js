@@ -10,6 +10,9 @@ class websocketClass
 		websocket.onopen = function(e){
 			console.log("Connected to websocket");
 			
+			//Send a little data to the socket so it knows we are a real user.
+			_websocket.socketSend({action: 1});
+			
 			//Ping the socket every 20s to keep the connection open.
 			_websocket.socketKeepAlive();
 		}
