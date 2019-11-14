@@ -18,7 +18,7 @@
 		protected $options;
 		
 		//function __construct( $db_connection = NULL, $args = array(), $address = "192.168.1.208", $port = 8080 ){
-		function __construct( $db_connection = NULL, $args = array(), $address = "localhost", $port = 8080 ){
+		function __construct( $db_connection = NULL, $args = array(), $address = "localhost", $port = 8081 ){
 			//Initialise resources as an object
 			$this->resources = new stdClass();
 			$this->socket = new stdClass();
