@@ -42,6 +42,9 @@ class appClass
 				);
 			} else if( notification_body.method == "deleteSupportTicket" ){
 				$("[data-ticket-id='"+ notification_body.support_ticket_id +"']").remove();
+				
+				//Count the number of tasks and display "no tasks" messaage if necessary
+				app.checkIfDisplayNoTasksMessage();
 			} else if( notification_body.method == "updateSupportTicket" ){
 				app.updateExistingSupportTicket( notification_body.support_ticket_id );
 			}
@@ -101,8 +104,27 @@ class appClass
 				})
 				
 				app.sortTickets();
+				
+				//Count the number of tasks and display "no tasks" messaage if necessary
+				app.checkIfDisplayNoTasksMessage();
 			}
 		);
+	}
+	
+	checkIfDisplayNoTasksMessage(){
+		if( ( $('.supportTasksTableRow').length - 1 ) == 0 ){		
+			$("#supportTasksTable")
+				.append(
+					$("<div></div>")
+						.addClass("fullWidth")
+						.addClass("centerAlign")
+						.append(
+							$("<h3></h3>")
+								.addClass("transparent")
+								.text("No tickets to display")
+						)
+				)
+		}
 	}
 	
 	addEditSupportTask( customerID = 0, taskDescription = "New Support Task", priorityID = 1, dueDate = 0, estimatedTimeHours = 1, supportTaskID = 0){

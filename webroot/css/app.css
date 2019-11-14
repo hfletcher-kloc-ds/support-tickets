@@ -91,6 +91,14 @@ p, h1{
 	display: inline;
 }
 
+.fullWidth{
+	width: 100%;
+}
+
 span, fa, fa-2x{
 	cursor: pointer;
+}
+
+.transparent{
+	color: rgba(0,0,0,0.5);
 }
