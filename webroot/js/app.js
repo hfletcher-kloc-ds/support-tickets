@@ -400,7 +400,7 @@ class appClass
 		}
 	}
 	
-	addEditSupportTask( customerID = 0, taskDescription = "New Support Task", priorityID = 1, dueDate = 0, estimatedTimeHours = 1, supportTaskID = 0, assigneeID = 0){
+	addEditSupportTask( customerID = 0, taskDescription = null, priorityID = 1, dueDate = 0, estimatedTimeHours = 1, supportTaskID = 0, assigneeID = 0){
 		if( dueDate == 0 )dueDate = app.ukDateFormat( new Date() );
 		
 		//Clear the form.
@@ -441,7 +441,8 @@ class appClass
 						$("<textarea></textarea>")
 							.addClass("taskDescriptionTextField")
 							.attr("id", "addEditSupportTaskDescription")
-							.val( taskDescription )
+							.attr("placeholder", "Task Description")
+							.val( taskDescription !== null ? taskDescription : "" )
 					)
 					.append("Task Priority:")
 					.append(
