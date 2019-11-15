@@ -628,6 +628,12 @@ class appClass
 									.attr("task-details-estimate-time-id", ticket.id)
 									.text("Estimated Time: " + ticket.time_estimate_hours + " hour" + ( parseFloat(ticket.time_estimate_hours) > 1 ? "s" : "" ))
 							)
+							.append("<br />")
+							.append(
+								$("<span></span>")
+									.attr("task-details-created-time-id", ticket.id)
+									.text("Issue Raised: " + ticket.created )
+							)
 					)					
 					.append(
 						$("<p></p>")
