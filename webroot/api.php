@@ -50,6 +50,14 @@
 			return array( 200, $stmt->fetchAll(PDO::FETCH_ASSOC) );
 		}
 		
+		function listAssignees(){
+			//returns list of customers
+			$stmt = $this->database->prepare("SELECT * FROM assignees");
+			if( !$stmt->execute() )return array( 400, "Error running query" );
+			
+			return array( 200, $stmt->fetchAll(PDO::FETCH_ASSOC) );
+		}
+		
 		function createCustomer(){
 			//inserts new customer to the database
 			//requires the following fields
@@ -59,12 +67,14 @@
 			$this->preventBlankFields(array("customer_name"));
 			
 			//Create the new customer insert query
-			$stmt = $this->database->prepare("INSERT INTO customers (`customer_name`) VALUES (:customer_name)");
+			$stmt = $this->database->prepare("INSERT INTO customers (`customer_name`, `customer_contact_email`, `customer_contact_number`) VALUES (:customer_name, :customer_contact_email, :customer_contact_number)");
 			
 			//Run the query, binding parameters to it
 			if(
 				!$stmt->execute(array(
-						":customer_name" => $_POST['customer_name']
+						":customer_name" => $_POST['customer_name'],			
+						":customer_contact_email" => "None.",
+						":customer_contact_number" => "None."
 					))
 			)return array( 400, "Error inserting customer to database");
 			
@@ -75,7 +85,9 @@
 			$this->pushNotification(array(
 					"method" => "createCustomer",
 					"customer_id" => $customerID,
-					"customer_name" => $_POST['customer_name']
+					"customer_name" => $_POST['customer_name'],
+					"customer_contact_email" => "Not available.",
+					"customer_contact_number" => "Not available."
 				));
 			
 			//Give the user the ID of the new customer
@@ -85,22 +97,24 @@
 		function updateCustomer(){
 			//updates customer name of an existing customer
 			//requires the following fields
-			$this->requiredFieldsCheck(array("customer_id", "customer_name"));
+			$this->requiredFieldsCheck(array("customer_id", "customer_name", "customer_contact_email", "customer_contact_number"));
 			
 			//does the customer exist?
 			if(!in_array( $_POST['customer_id'], array_column( $this->listCustomers()[1], 'id' ) ))return array(400, "Customer ID doesn't exist");
 			
 			//prevent blank customer name
-			$this->preventBlankFields(array("customer_name"));
+			$this->preventBlankFields(array("customer_name", "customer_contact_email", "customer_contact_number"));
 			
 			//Build query to update customer
-			$stmt = $this->database->prepare("UPDATE customers SET customer_name=:customer_name WHERE id=:customer_id");
+			$stmt = $this->database->prepare("UPDATE customers SET customer_name=:customer_name, customer_contact_email=:customer_contact_email, customer_contact_number=:customer_contact_number WHERE id=:customer_id");
 			
 			//Run the query, binding params
 			if(
 				!$stmt->execute(array(
 						":customer_id" => $_POST['customer_id'],
-						":customer_name" => $_POST['customer_name']
+						":customer_name" => $_POST['customer_name'],
+						":customer_contact_email" => $_POST['customer_contact_email'],
+						":customer_contact_number" => $_POST['customer_contact_number']
 					))
 			)return array( 400, "Customer failed to update.");
 			
@@ -162,7 +176,8 @@
 					"task_description",
 					"priority_id",
 					"due_date",
-					"time_estimate_hours"
+					"time_estimate_hours",
+					"assignee_id"
 				));
 				
 			//Check the customer exists
@@ -170,6 +185,9 @@
 			
 			//Check the priority exists
 			if(!in_array( $_POST['priority_id'], array_column( $this->listPriorities()[1], 'id' ) ))return array(400, "Priority ID doesn't exist");
+			
+			//Check the assignee exists
+			if(!in_array( $_POST['assignee_id'], array_column( $this->listAssignees()[1],  'id' ) ))return array( 400, "Assignee ID doesn't exist");
 			
 			//Prevent blank task descriptions
 			$this->preventBlankFields(array("task_description"));
@@ -199,7 +217,7 @@
 			if( $validated[0] != 200 )return $validated;
 			
 			//Build a query to insert the support ticket
-			$stmt = $this->database->prepare("INSERT INTO support_tickets (`customer_id`,`task_description`,`priority_id`,`due_date`,`time_estimate_hours`) VALUES ( :customer_id, :task_description, :priority_id, :due_date, :time_estimate_hours)");
+			$stmt = $this->database->prepare("INSERT INTO support_tickets (`customer_id`,`task_description`,`priority_id`,`due_date`,`time_estimate_hours`, `assignee_id`) VALUES ( :customer_id, :task_description, :priority_id, :due_date, :time_estimate_hours, :assignee_id)");
 			
 			//Run the query, binding parameters
 			if(
@@ -208,7 +226,8 @@
 						":task_description" => $_POST['task_description'],
 						":priority_id" => $_POST['priority_id'],
 						":due_date" => $_POST['due_date'],
-						":time_estimate_hours" => $_POST['time_estimate_hours']
+						":time_estimate_hours" => $_POST['time_estimate_hours'],
+						":assignee_id" => $_POST['assignee_id']
 					))
 			)return array( 400, "Error inserting the support ticket to the database" );
 			
@@ -228,7 +247,7 @@
 		function listSupportTickets( $specific_id = 0 ){
 			//this method returns all support tickets
 			//build a query
-			$stmt = $this->database->prepare("SELECT st.*, c.customer_name, p.priority_name AS 'priority' FROM support_tickets st JOIN customers c ON c.id=st.customer_id JOIN priority p ON p.id=st.priority_id WHERE ( st.id=:specific_id OR :specific_id=0 ) AND archived=0");
+			$stmt = $this->database->prepare("SELECT st.*, c.customer_name, c.customer_contact_number, c.customer_contact_email, p.priority_name AS 'priority', a.assignee_name FROM support_tickets st JOIN customers c ON c.id=st.customer_id JOIN priority p ON p.id=st.priority_id JOIN assignees a ON st.assignee_id=a.id WHERE ( st.id=:specific_id OR :specific_id=0 ) AND archived=0");
 			
 			//run query
 			if( !$stmt->execute(array(
@@ -276,7 +295,7 @@
 			if( $validated[0] != 200 )return $validated;
 			
 			//build Query to update the support ticket
-			$stmt = $this->database->prepare("UPDATE support_tickets SET customer_id=:customer_id, task_description=:task_description, priority_id=:priority_id, due_date=:due_date, time_estimate_hours=:time_estimate_hours WHERE id=:support_ticket_id");
+			$stmt = $this->database->prepare("UPDATE support_tickets SET customer_id=:customer_id, task_description=:task_description, priority_id=:priority_id, due_date=:due_date, time_estimate_hours=:time_estimate_hours, assignee_id=:assignee_id WHERE id=:support_ticket_id");
 			
 			//Run the query, binding parameters
 			if(
@@ -286,7 +305,8 @@
 						":priority_id" => $_POST['priority_id'],
 						":due_date" => $_POST['due_date'],
 						":time_estimate_hours" => $_POST['time_estimate_hours'],
-						":support_ticket_id" => $_POST['support_ticket_id']
+						":support_ticket_id" => $_POST['support_ticket_id'],
+						":assignee_id" => $_POST['assignee_id']
 					))
 			)return array( 400, "Error running update query" );
 			

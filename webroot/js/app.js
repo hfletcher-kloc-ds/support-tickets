@@ -183,80 +183,166 @@ class appClass
 								.addClass("supportTasksRowBorder")
 								.attr("data-customer-id", customer.id)
 								.append(
-									$("<h4></h4>")
-										.addClass("noMargin")
-										.addClass("inlineText")
-										.attr("data-customer-id", customer.id)
-										.text( customer.customer_name )
+									$("<div></div>")
+										.addClass("propertyTextContainerLeft")
+										.append(
+											$("<p></p>")
+												.addClass("noMargin")
+												.append(
+													$("<h3></h3>")
+														.addClass("noMargin")
+														.addClass("inlineText")
+														.attr("id", "customerNameFinal")
+														.attr("data-customer-id", customer.id)
+														.text( customer.customer_name )
+												)
+												.append(
+													$("<input></input>")
+														.addClass("noMargin")
+														.addClass("inlineText")
+														.attr("id", "customerNameEdit")
+														.attr("data-customer-id", customer.id)
+														.hide()
+														.val( customer.customer_name )
+												)
+										)
+										.append(
+											$("<p></p>")
+												.addClass("noMargin")
+												.append(
+													$("<span></span>")
+														.addClass("inlineText")
+														.text("Customer Contact Number:")
+												)
+												.append(
+													$("<span></span>")
+														.addClass("inlineText")
+														.addClass("smallLeftMargin")
+														.attr("id", "customerContactNumberFinal")
+														.attr("data-customer-id", customer.id)
+														.text(customer.customer_contact_number)
+												)
+												.append(
+													$("<input></input>")
+														.addClass("inlineText")
+														.addClass("smallLeftMargin")
+														.attr("id", "customerContactNumberEdit")
+														.attr("data-customer-id", customer.id)
+														.hide()
+														.val(customer.customer_contact_number)
+												)
+										)
+										.append(
+											$("<p></p>")
+												.addClass("noMargin")
+												.append(
+													$("<span></span>")
+														.addClass("inlineText")
+														.text("Customer Contact Email:")
+												)
+												.append(
+													$("<span></span>")
+														.addClass("inlineText")
+														.addClass("smallLeftMargin")
+														.attr("id", "customerContactEmailFinal")
+														.attr("data-customer-id", customer.id)
+														.text(customer.customer_contact_email)
+												)
+												.append(
+													$("<input></input>")
+														.addClass("inlineText")
+														.addClass("smallLeftMargin")
+														.attr("id", "customerContactEmailEdit")
+														.attr("data-customer-id", customer.id)
+														.hide()
+														.val(customer.customer_contact_email)
+												)
+										)
 								)
 								.append(
-									$("<input></input>")
-										.addClass("noMargin")
-										.addClass("inlineText")
-										.attr("data-customer-id", customer.id)
-										.hide()
-										.val( customer.customer_name )
-								)
-								.append(
-									$("<i></i>")
-										.addClass("fa")
-										.addClass("fa-trash")
-										.addClass("addMoreTasksButton")
-										.attr("title", "Delete Customer")
-										.addClass("smallLeftMargin")
-										.attr("data-customer-id", customer.id)
-										.click(function(e){
-											var customerId = $(this).attr("data-customer-id");
-											_api.call(
-												"deleteCustomer",
-												{customer_id: customerId},
-												function(data){
-													$("[data-customer-id='"+  +"']")
-												}
-											);
-										})
-								)
-								.append(
-									$("<i></i>")
-										.addClass("fa")
-										.addClass("fa-edit")
-										.addClass("addMoreTasksButton")
-										.attr("title", "Edit Customer")
-										.attr("data-customer-id", customer.id)
-										.click(function(e){
-											$(this).hide();
-											$(".fa-save[data-customer-id='"+ $(this).attr("data-customer-id") +"']").show();
-											$("h4[data-customer-id='"+ $(this).attr("data-customer-id") +"']").hide();
-											$("input[data-customer-id='"+ $(this).attr("data-customer-id") +"']").show();
-										})
-								)
-								.append(
-									$("<i></i>")
-										.addClass("fa")
-										.addClass("fa-save")
-										.addClass("addMoreTasksButton")
-										.attr("title", "Save Customer")
-										.attr("data-customer-id", customer.id)
-										.hide()
-										.click(function(e){
-											var self = $(this);
-											var customerID = self.attr("data-customer-id");
-											var customerName = $("input[data-customer-id='"+ customerID +"']").val();
-											
-											_api.call(
-												"updateCustomer",
-												{
-													customer_id: customerID,
-													customer_name: customerName
-												},
-												function(data){
-													self.hide();
-													$("h4[data-customer-id='"+ customerID +"']").show().text(customerName);
-													$(".fa-edit[data-customer-id='"+ customerID +"']").show();
-													$("input[data-customer-id='"+ customerID +"']").hide();
-												}
-											)
-										})
+									$("<div></div>")
+										.addClass("propertyTextContainerRight")
+										.append(
+											$("<i></i>")
+												.addClass("fa")
+												.addClass("fa-2x")
+												.addClass("fa-trash")
+												.addClass("addMoreTasksButton")
+												.attr("title", "Delete Customer")
+												.addClass("smallLeftMargin")
+												.attr("data-customer-id", customer.id)
+												.click(function(e){
+													var customerId = $(this).attr("data-customer-id");
+													_api.call(
+														"deleteCustomer",
+														{customer_id: customerId},
+														function(data){
+															$("[data-customer-id='"+  +"']")
+														}
+													);
+												})
+										)
+										.append(
+											$("<i></i>")
+												.addClass("fa")
+												.addClass("fa-2x")
+												.addClass("fa-edit")
+												.addClass("addMoreTasksButton")
+												.attr("title", "Edit Customer")
+												.attr("data-customer-id", customer.id)
+												.click(function(e){
+													var customerID = $(this).attr("data-customer-id");
+													
+													$(this).hide();
+													
+													$(".fa-save[data-customer-id='"+ $(this).attr("data-customer-id") +"']").show();
+													
+													//Toggle fields
+													$("#customerNameEdit[data-customer-id='"+ customerID +"']").show();
+													$("#customerNameFinal[data-customer-id='"+ customerID +"']").hide();
+													$("#customerContactNumberEdit[data-customer-id='"+ customerID +"']").show();
+													$("#customerContactNumberFinal[data-customer-id='"+ customerID +"']").hide();
+													$("#customerContactEmailEdit[data-customer-id='"+ customerID +"']").show();
+													$("#customerContactEmailFinal[data-customer-id='"+ customerID +"']").hide();
+												})
+										)
+										.append(
+											$("<i></i>")
+												.addClass("fa")
+												.addClass("fa-2x")
+												.addClass("fa-save")
+												.addClass("addMoreTasksButton")
+												.attr("title", "Save Customer")
+												.attr("data-customer-id", customer.id)
+												.hide()
+												.click(function(e){
+													var self = $(this);
+													var customerID = self.attr("data-customer-id");
+													var customerName = $("input[data-customer-id='"+ customerID +"']").val();
+													var customerContactNumber = $("#customerContactNumberEdit[data-customer-id='"+ customerID +"']").val();
+													var customerContactEmail  = $("#customerContactEmailEdit[data-customer-id='"+ customerID +"']").val();
+													
+													_api.call(
+														"updateCustomer",
+														{
+															customer_id: customerID,
+															customer_name: customerName,
+															customer_contact_email: customerContactEmail,
+															customer_contact_number: customerContactNumber
+														},
+														function(data){
+															self.hide();
+															//Toggle fields
+															$("#customerNameEdit[data-customer-id='"+ customerID +"']").hide();
+															$("#customerNameFinal[data-customer-id='"+ customerID +"']").show().text(customerName);
+															$("#customerContactNumberEdit[data-customer-id='"+ customerID +"']").hide();
+															$("#customerContactNumberFinal[data-customer-id='"+ customerID +"']").show().text(customerContactNumber);
+															$("#customerContactEmailEdit[data-customer-id='"+ customerID +"']").hide();
+															$("#customerContactEmailFinal[data-customer-id='"+ customerID +"']").show().text(customerContactEmail);
+														}
+													)
+												})
+										)
 								)
 						)
 				})
@@ -299,7 +385,7 @@ class appClass
 	}
 	
 	checkIfDisplayNoTasksMessage(){
-		if( ( $('.supportTasksTableRow').length - 1 ) == 0 ){		
+		if( ( $('.supportTasksTableRow').length - 1 ) == 0 ){
 			$("#supportTasksTable")
 				.append(
 					$("<div></div>")
@@ -314,7 +400,7 @@ class appClass
 		}
 	}
 	
-	addEditSupportTask( customerID = 0, taskDescription = "New Support Task", priorityID = 1, dueDate = 0, estimatedTimeHours = 1, supportTaskID = 0){
+	addEditSupportTask( customerID = 0, taskDescription = "New Support Task", priorityID = 1, dueDate = 0, estimatedTimeHours = 1, supportTaskID = 0, assigneeID = 0){
 		if( dueDate == 0 )dueDate = app.ukDateFormat( new Date() );
 		
 		//Clear the form.
@@ -385,6 +471,17 @@ class appClass
 							.val( estimatedTimeHours )
 					)
 					.append(
+						$("<select></select>")
+							.addClass("editTaskField")
+							.attr("id", "addEditAssigneeField")
+							.append(
+								$("<option></option>")
+									.val( 0 )
+									.text("Assignee")
+									.hide()
+							)
+					)
+					.append(
 						$("<button></button>")
 							.addClass("addEditSupportTaskSaveButton")
 							.addClass("editTaskField")
@@ -403,7 +500,8 @@ class appClass
 										priority_id: $("#addEditSupportTaskPriority").val(),
 										due_date: $("#addEditSupportTaskDueDate").val(),
 										time_estimate_hours: $("#addEditSupportTaskEstimatedHours").val(),
-										support_ticket_id: $(this).attr("data-support-task-id")
+										support_ticket_id: $(this).attr("data-support-task-id"),
+										assignee_id: $("#addEditAssigneeField option:selected").val()
 									},
 									function(data){
 										$("#addTaskFormContainer").hide();
@@ -431,6 +529,26 @@ class appClass
 						
 					if( parseInt( customer.id ) == parseInt( customerID ) ){
 						$("#addEditSupportTaskCustomer option:last").attr("selected", true);
+					}
+				})
+			}
+		);
+		
+		//get the list of users that can be assigned
+		_api.call(
+			"listAssignees",
+			{},
+			function(assignees){
+				$.each( assignees, function(i, assignee){
+					$("#addEditAssigneeField")
+						.append(
+							$("<option></option>")
+								.val( assignee.id )
+								.text( assignee.assignee_name )
+						)
+						
+					if( parseInt( assignee.id ) == parseInt( assigneeID ) ){
+						$("#addEditAssigneeField option:last").attr("selected", true);
 					}
 				})
 			}
@@ -469,6 +587,8 @@ class appClass
 					.attr("data-ticket-due-date", ticket.due_date)
 					.addClass("supportTasksTableRow")
 					.addClass("supportTasksRowBorder")
+					.addClass(parseInt(ticket.priority_id) == 1 || parseInt(ticket.priority_id) == 2 ? "overdue" : "" )
+					.addClass(parseInt(ticket.priority_id) == 3 ? "dueToday" : "" )
 					.append(
 						$("<h3></h3>")
 							.addClass("noMargin")
@@ -485,6 +605,7 @@ class appClass
 					)
 					.append(
 						$("<p></p>")
+							.addClass("propertyTextContainerLeft")
 							.attr("task-details-ticket-id", ticket.id)
 							.append(
 								$("<span></span>")
@@ -503,6 +624,26 @@ class appClass
 								$("<span></span>")
 									.attr("task-details-estimate-time-id", ticket.id)
 									.text("Estimated Time: " + ticket.time_estimate_hours + " hour" + ( parseFloat(ticket.time_estimate_hours) > 1 ? "s" : "" ))
+							)
+					)					
+					.append(
+						$("<p></p>")
+							.addClass("propertyTextContainerRight")
+							.attr("task-details-ticket-id", ticket.id)
+							.append(
+								$("<span></span>")
+									.attr("task-details-assigned-to-id", ticket.id)
+									.text("Assigned To: " + ticket.assignee_name)
+							)
+							.append("<br />")
+							.append(
+								$("<span></span>")
+									.text("Customer Phone Number: " + ticket.customer_contact_number)
+							)
+							.append("<br />")
+							.append(
+								$("<span></span>")
+									.text("Customer Contact Email: " + ticket.customer_contact_email)
 							)
 					)
 			)
@@ -604,7 +745,7 @@ class appClass
 												ticket = ticket[0];
 												
 												//Show the add/edit support task form
-												app.addEditSupportTask( ticket.customer_id, ticket.task_description, ticket.priority_id, ticket.due_date, ticket.estimated_time_hours, ticket.id);
+												app.addEditSupportTask( ticket.customer_id, ticket.task_description, ticket.priority_id, ticket.due_date, ticket.estimated_time_hours, ticket.id, ticket.assignee_id);
 												
 												//Remove all edit buttons
 												app.closeAllEditFields();
@@ -657,9 +798,41 @@ class appClass
 					)
 			);
 			
-			if( app.isDueToday( ticket.attr("data-ticket-due-date") ) )ticket.addClass("dueToday");
-			if( app.isOverdue( ticket.attr("data-ticket-due-date") ) )ticket.addClass("overdue");
+			//Get the due date of the ticket and the current date
+			var ticketDueDate = new Date( ticket.attr("data-ticket-due-date") );
+			if( app.isOverdue( ticketDueDate ) ){
+				$("[data-ticket-id='"+ ticketID +"']")
+					.removeClass("dueToday")
+					.addClass("overdue")
+			}
+			
+			if( app.isDueToday( ticketDueDate ) ){
+				$("[data-ticket-id='"+ ticketID +"']")
+					.addClass("dueToday")
+			}
 		})
+	}
+	
+	isOverdue( ticketDueDate ){
+		//Check if supplied parameter is a date
+		if( typeof ticketDueDate.getTime !== "function" )return null;
+		
+		//Work out the current date
+		var theCurrentDay = new Date( app.usDateFormat( app.ukDateFormat( new Date() ) ) );
+		
+		//Work out if the ticket due date is in the past
+		return ticketDueDate.getTime() < theCurrentDay.getTime();
+	}
+	
+	isDueToday( ticketDueDate ){
+		//Check if supplied parameter is a date
+		if( typeof ticketDueDate.getTime !== "function" )return null;
+		
+		//Work out the current date
+		var theCurrentDay = new Date( app.usDateFormat( app.ukDateFormat( new Date() ) ) );
+		
+		//Work out if the ticket due date is in the past
+		return ticketDueDate.getTime() == theCurrentDay.getTime();
 	}
 	
 	closeAllEditFields( ticketID ){
@@ -674,28 +847,6 @@ class appClass
 		
 		//Remove all edit fields
 		$("[data-is-edit='"+ ticketID +"']").remove();
-	}
-
-	isOverdue( taskDueDate ){
-		taskDueDate = new Date( app.ukDateFormat( taskDueDate ) );
-		var todayDate = new Date( app.ukDateFormat( new Date() ) );
-		
-		if( taskDueDate.getTime() < todayDate.getTime() ){
-			return true;
-		}
-		
-		return false;
-	}
-	
-	isDueToday(taskDueDate){
-		taskDueDate = new Date( app.ukDateFormat( taskDueDate ) );
-		var todayDate = new Date( app.ukDateFormat( new Date() ) );
-		
-		if( taskDueDate.getTime() == todayDate.getTime() ){
-			return true;
-		}
-		
-		return false;
 	}
 	
 	ukDateFormat(usDate){

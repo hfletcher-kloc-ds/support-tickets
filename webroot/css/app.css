@@ -8,6 +8,7 @@ p, h1{
 
 .ticketTitleText{
 	font-size: 25px;
+	white-space: pre-wrap;
 }
 
 .logo{
@@ -37,11 +38,11 @@ p, h1{
 }
 
 .supportTasksTableRow{
-	margin-top: 10px;
-	width: calc( 100% - 2px );
-	display: block;
-	
+	width: 100%;
 	padding-left: 10px;
+	padding-right: 10px;
+	display: inline-block;
+	margin-bottom: 5px;
 }
 
 .supportTasksRowBorder{
@@ -101,4 +102,20 @@ span, fa, fa-2x{
 
 .transparent{
 	color: rgba(0,0,0,0.5);
+}
+
+.propertyTextContainerLeft{
+	display: block;
+	float: left;
+}
+
+.propertyTextContainerRight{
+	display: block;
+	float: right;
+}
+
+.propertyText{
+	position: relative;
+	display: block;
+	height: 20px;
 }
