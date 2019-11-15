@@ -333,6 +333,7 @@ class appClass
 														function(data){
 															self.hide();
 															//Toggle fields
+															$(".fa-edit[data-customer-id='"+ customerID +"']").show();
 															$("#customerNameEdit[data-customer-id='"+ customerID +"']").hide();
 															$("#customerNameFinal[data-customer-id='"+ customerID +"']").show().text(customerName);
 															$("#customerContactNumberEdit[data-customer-id='"+ customerID +"']").hide();
