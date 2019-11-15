@@ -470,6 +470,7 @@ class appClass
 							.attr("id", "addEditSupportTaskEstimatedHours")
 							.val( estimatedTimeHours )
 					)
+					.append("Assignee:")
 					.append(
 						$("<select></select>")
 							.addClass("editTaskField")
