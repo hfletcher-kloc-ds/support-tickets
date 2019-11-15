@@ -632,7 +632,7 @@ class appClass
 							.append(
 								$("<span></span>")
 									.attr("task-details-created-time-id", ticket.id)
-									.text("Issue Raised: " + ticket.created )
+									.text("Issue Raised: " + app.ukDateFormat( ticket.created.split(" ")[0] ) + " " + ticket.created.split(" ")[1] )
 							)
 					)					
 					.append(
