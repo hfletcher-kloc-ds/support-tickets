@@ -247,7 +247,7 @@
 		function listSupportTickets( $specific_id = 0 ){
 			//this method returns all support tickets
 			//build a query
-			$stmt = $this->database->prepare("SELECT st.*, c.customer_name, c.customer_contact_number, c.customer_contact_email, p.priority_name AS 'priority', a.assignee_name FROM support_tickets st JOIN customers c ON c.id=st.customer_id JOIN priority p ON p.id=st.priority_id JOIN assignees a ON st.assignee_id=a.id WHERE ( st.id=:specific_id OR :specific_id=0 ) AND archived=0");
+			$stmt = $this->database->prepare("SELECT st.*, c.customer_name, c.customer_contact_number, c.customer_contact_email, p.priority_name AS 'priority', a.assignee_name FROM support_tickets st JOIN customers c ON c.id=st.customer_id JOIN priority p ON p.id=st.priority_id LEFT JOIN assignees a ON st.assignee_id=a.id WHERE ( st.id=:specific_id OR :specific_id=0 ) AND archived=0");
 			
 			//run query
 			if( !$stmt->execute(array(
