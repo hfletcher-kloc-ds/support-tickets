@@ -1,4 +1,5 @@
 <?php
+        if( sizeof( $_POST ) == 0 ) $_POST = json_decode(file_get_contents("php://input"), true);
 
 	//API returns JSON
 	header('Content-Type: application/json');
@@ -95,7 +96,7 @@
 		}
 		
 		function manualRefresh(){
-			parent::requiredFieldsCheck(array("secret_token"));
+			$this->requiredFieldsCheck(array("secret_token"));
 			
 			$stmt = $this->database->prepare("SELECT * FROM tokens WHERE id=1;");
 			$stmt->execute();
