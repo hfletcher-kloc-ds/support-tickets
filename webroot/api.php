@@ -94,6 +94,17 @@
 			return array( 200, $customerID );
 		}
 		
+		function manualRefresh(){
+			parent::requiredFieldsCheck(array("secret_token"));
+			
+			$stmt = $this->database->prepare("SELECT * FROM tokens WHERE id=1;");
+			$stmt->execute();
+			if( $_POST['secret_token'] !== $stmt->fetch(PDO::FETCH_ASSOC)['token'] )return array(403, "Bad secret_token");
+			
+			$this->pushNotification(array("method"=>"manualRefresh"));
+			return array( 200, "Notification Sent" );
+		}
+		
 		function updateCustomer(){
 			//updates customer name of an existing customer
 			//requires the following fields

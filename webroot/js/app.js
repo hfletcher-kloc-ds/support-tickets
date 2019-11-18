@@ -56,6 +56,9 @@ class appClass
 				app.checkIfDisplayNoTasksMessage();
 			} else if( notification_body.method == "updateSupportTicket" ){
 				app.updateExistingSupportTicket( notification_body.support_ticket_id );
+			} else if( notification_body.method == "manualRefresh" ){
+				//Reload the page.
+				window.location.reload();
 			}
 		})
 		
