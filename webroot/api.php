@@ -212,9 +212,9 @@
 			)return array(400, "Invalid due date");
 			
 			//Is the date in the future or today?
-			$date = new DateTime( $_POST['due_date'] );
-			$current_date = new DateTime( date('Y-m-d') );
-			if( $date < $current_date )return array( 400, "Due date can't be in the past" );
+			//$date = new DateTime( $_POST['due_date'] );
+			//$current_date = new DateTime( date('Y-m-d') );
+			//if( $date < $current_date )return array( 400, "Due date can't be in the past" );
 			
 			//Check estimated time is greater than 0
 			if( (float)$_POST['time_estimate_hours'] <= 0 )return array( 400, "Estimated time must be greater than 0");
