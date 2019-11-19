@@ -215,24 +215,50 @@ class appClass
 												.append(
 													$("<span></span>")
 														.addClass("inlineText")
-														.text("Customer Contact Number:")
+														.text("Customer Landline Contact Number:")
 												)
 												.append(
 													$("<span></span>")
 														.addClass("inlineText")
 														.addClass("smallLeftMargin")
-														.attr("id", "customerContactNumberFinal")
+														.attr("id", "customerContactNumberLandlineFinal")
 														.attr("data-customer-id", customer.id)
-														.text(customer.customer_contact_number)
+														.text(customer.customer_contact_number_landline)
 												)
 												.append(
 													$("<input></input>")
 														.addClass("inlineText")
 														.addClass("smallLeftMargin")
-														.attr("id", "customerContactNumberEdit")
+														.attr("id", "customerContactNumberLandlineEdit")
 														.attr("data-customer-id", customer.id)
 														.hide()
-														.val(customer.customer_contact_number)
+														.val(customer.customer_contact_number_landline)
+												)
+										)
+										.append(
+											$("<p></p>")
+												.addClass("noMargin")
+												.append(
+													$("<span></span>")
+														.addClass("inlineText")
+														.text("Customer Mobile Contact Number:")
+												)
+												.append(
+													$("<span></span>")
+														.addClass("inlineText")
+														.addClass("smallLeftMargin")
+														.attr("id", "customerContactNumberMobileFinal")
+														.attr("data-customer-id", customer.id)
+														.text(customer.customer_contact_number_mobile)
+												)
+												.append(
+													$("<input></input>")
+														.addClass("inlineText")
+														.addClass("smallLeftMargin")
+														.attr("id", "customerContactNumberMobileEdit")
+														.attr("data-customer-id", customer.id)
+														.hide()
+														.val(customer.customer_contact_number_mobile)
 												)
 										)
 										.append(
@@ -303,8 +329,10 @@ class appClass
 													//Toggle fields
 													$("#customerNameEdit[data-customer-id='"+ customerID +"']").show();
 													$("#customerNameFinal[data-customer-id='"+ customerID +"']").hide();
-													$("#customerContactNumberEdit[data-customer-id='"+ customerID +"']").show();
-													$("#customerContactNumberFinal[data-customer-id='"+ customerID +"']").hide();
+													$("#customerContactNumberMobileEdit[data-customer-id='"+ customerID +"']").show();
+													$("#customerContactNumberMobileFinal[data-customer-id='"+ customerID +"']").hide();
+													$("#customerContactNumberLandlineEdit[data-customer-id='"+ customerID +"']").show();
+													$("#customerContactNumberLandlineFinal[data-customer-id='"+ customerID +"']").hide();
 													$("#customerContactEmailEdit[data-customer-id='"+ customerID +"']").show();
 													$("#customerContactEmailFinal[data-customer-id='"+ customerID +"']").hide();
 												})
@@ -322,7 +350,8 @@ class appClass
 													var self = $(this);
 													var customerID = self.attr("data-customer-id");
 													var customerName = $("input[data-customer-id='"+ customerID +"']").val();
-													var customerContactNumber = $("#customerContactNumberEdit[data-customer-id='"+ customerID +"']").val();
+													var customerContactNumberMobile = $("#customerContactNumberMobileEdit[data-customer-id='"+ customerID +"']").val();
+													var customerContactNumberLandline = $("#customerContactNumberLandlineEdit[data-customer-id='"+ customerID +"']").val();
 													var customerContactEmail  = $("#customerContactEmailEdit[data-customer-id='"+ customerID +"']").val();
 													
 													_api.call(
@@ -331,7 +360,8 @@ class appClass
 															customer_id: customerID,
 															customer_name: customerName,
 															customer_contact_email: customerContactEmail,
-															customer_contact_number: customerContactNumber
+															customer_contact_number_mobile: customerContactNumberMobile,
+															customer_contact_number_landline: customerContactNumberLandline
 														},
 														function(data){
 															self.hide();
@@ -339,8 +369,10 @@ class appClass
 															$(".fa-edit[data-customer-id='"+ customerID +"']").show();
 															$("#customerNameEdit[data-customer-id='"+ customerID +"']").hide();
 															$("#customerNameFinal[data-customer-id='"+ customerID +"']").show().text(customerName);
-															$("#customerContactNumberEdit[data-customer-id='"+ customerID +"']").hide();
-															$("#customerContactNumberFinal[data-customer-id='"+ customerID +"']").show().text(customerContactNumber);
+															$("#customerContactNumberLandlineEdit[data-customer-id='"+ customerID +"']").hide();
+															$("#customerContactNumberLandlineFinal[data-customer-id='"+ customerID +"']").show().text(customerContactNumberLandline);
+															$("#customerContactNumberMobileEdit[data-customer-id='"+ customerID +"']").hide();
+															$("#customerContactNumberMobileFinal[data-customer-id='"+ customerID +"']").show().text(customerContactNumberLandline);
 															$("#customerContactEmailEdit[data-customer-id='"+ customerID +"']").hide();
 															$("#customerContactEmailFinal[data-customer-id='"+ customerID +"']").show().text(customerContactEmail);
 														}
@@ -650,7 +682,12 @@ class appClass
 							.append("<br />")
 							.append(
 								$("<span></span>")
-									.text("Customer Phone Number: " + ticket.customer_contact_number)
+									.text("Customer Landline Phone Number: " + ticket.customer_contact_number_landline)
+							)
+							.append("<br />")
+							.append(
+								$("<span></span>")
+									.text("Customer Mobile Phone Number: " + ticket.customer_contact_number_mobile)
 							)
 							.append("<br />")
 							.append(

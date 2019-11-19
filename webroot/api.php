@@ -68,14 +68,15 @@
 			$this->preventBlankFields(array("customer_name"));
 			
 			//Create the new customer insert query
-			$stmt = $this->database->prepare("INSERT INTO customers (`customer_name`, `customer_contact_email`, `customer_contact_number`) VALUES (:customer_name, :customer_contact_email, :customer_contact_number)");
+			$stmt = $this->database->prepare("INSERT INTO customers (`customer_name`, `customer_contact_email`, `customer_contact_number_mobile`, `customer_contact_number_landline`) VALUES (:customer_name, :customer_contact_email, :customer_contact_number_mobile, :customer_contact_number_landline)");
 			
 			//Run the query, binding parameters to it
 			if(
 				!$stmt->execute(array(
 						":customer_name" => $_POST['customer_name'],			
 						":customer_contact_email" => "None.",
-						":customer_contact_number" => "None."
+						":customer_contact_number_mobile" => "None.",
+						":customer_contact_number_landline" => "None."
 					))
 			)return array( 400, "Error inserting customer to database");
 			
@@ -88,7 +89,8 @@
 					"customer_id" => $customerID,
 					"customer_name" => $_POST['customer_name'],
 					"customer_contact_email" => "Not available.",
-					"customer_contact_number" => "Not available."
+					"customer_contact_number_mobile" => "Not available.",
+					"customer_contact_number_landline" => "Not available."
 				));
 			
 			//Give the user the ID of the new customer
@@ -109,16 +111,16 @@
 		function updateCustomer(){
 			//updates customer name of an existing customer
 			//requires the following fields
-			$this->requiredFieldsCheck(array("customer_id", "customer_name", "customer_contact_email", "customer_contact_number"));
+			$this->requiredFieldsCheck(array("customer_id", "customer_name", "customer_contact_email", "customer_contact_number_landline", "customer_contact_number_mobile"));
 			
 			//does the customer exist?
 			if(!in_array( $_POST['customer_id'], array_column( $this->listCustomers()[1], 'id' ) ))return array(400, "Customer ID doesn't exist");
 			
 			//prevent blank customer name
-			$this->preventBlankFields(array("customer_name", "customer_contact_email", "customer_contact_number"));
+			$this->preventBlankFields(array("customer_name", "customer_contact_email", "customer_contact_number_landline"));
 			
 			//Build query to update customer
-			$stmt = $this->database->prepare("UPDATE customers SET customer_name=:customer_name, customer_contact_email=:customer_contact_email, customer_contact_number=:customer_contact_number WHERE id=:customer_id");
+			$stmt = $this->database->prepare("UPDATE customers SET customer_name=:customer_name, customer_contact_email=:customer_contact_email, customer_contact_number_landline=:customer_contact_number_landline, customer_contact_number_mobile=:customer_contact_number_mobile WHERE id=:customer_id");
 			
 			//Run the query, binding params
 			if(
@@ -126,7 +128,8 @@
 						":customer_id" => $_POST['customer_id'],
 						":customer_name" => $_POST['customer_name'],
 						":customer_contact_email" => $_POST['customer_contact_email'],
-						":customer_contact_number" => $_POST['customer_contact_number']
+						":customer_contact_number_landline" => $_POST['customer_contact_number_landline'],
+						":customer_contact_number_mobile" => $_POST['customer_contact_number_mobile']
 					))
 			)return array( 400, "Customer failed to update.");
 			
@@ -259,7 +262,7 @@
 		function listSupportTickets( $specific_id = 0 ){
 			//this method returns all support tickets
 			//build a query
-			$stmt = $this->database->prepare("SELECT st.*, c.customer_name, c.customer_contact_number, c.customer_contact_email, p.priority_name AS 'priority', a.assignee_name FROM support_tickets st JOIN customers c ON c.id=st.customer_id JOIN priority p ON p.id=st.priority_id LEFT JOIN assignees a ON st.assignee_id=a.id WHERE ( st.id=:specific_id OR :specific_id=0 ) AND archived=0");
+			$stmt = $this->database->prepare("SELECT st.*, c.customer_name, c.customer_contact_number_mobile, c.customer_contact_number_landline, c.customer_contact_email, p.priority_name AS 'priority', a.assignee_name FROM support_tickets st JOIN customers c ON c.id=st.customer_id JOIN priority p ON p.id=st.priority_id LEFT JOIN assignees a ON st.assignee_id=a.id WHERE ( st.id=:specific_id OR :specific_id=0 ) AND archived=0");
 			
 			//run query
 			if( !$stmt->execute(array(
